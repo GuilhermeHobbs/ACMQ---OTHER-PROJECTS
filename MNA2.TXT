@@ -1,0 +1,67 @@
+Programa MNA2. Demonstracao de analise nodal modificada no tempo.
+Por Antonio Carlos M. de Queiroz
+Comentarios sobre a versao 1.0.
+
+Elementos aceitos e linhas do netlist:
+
+A primeira linha e um titulo, ignorada.
+Linhas comecando com "*" sao comentarios.
+
+Resistor:  R<nome> <no+> <no-> <resistencia>
+VCCS:      G<nome> <io+> <io-> <vi+> <vi-> <transcondutancia>
+VCVC:      E<nome> <vo+> <vo-> <vi+> <vi-> <ganho de tensao>
+CCCS:      F<nome> <io+> <io-> <ii+> <ii-> <ganho de corrente>
+CCVS:      H<nome> <vo+> <vo-> <ii+> <ii-> <transresistencia>
+Fonte I:   I<nome> <io+> <io-> <tipo de fonte>
+Fonte V:   V<nome> <vo+> <vo-> <tipo de fonte>
+Amp. op.:  O<nome> <vo1> <vo2> <vi1> <vi2>
+Capacitor: C<nome> <no+> <no-> <capacitancia> [IC=<tensao inicial>]
+Indutor:   L<nome> <no+> <no-> <indutancia> [IC=<corrente inicial>]
+Ind. mutua:K<nome> <L1> <L2> <coeficiente de acoplamento>
+Diodo:     D<nome> <no+> <no->
+Trans. MOS:M<nome> <nod> <nog> <nos> <nob> <tipo> L=<comprimento> W=<largura>
+
+As fontes F e H tem o ramo de entrada em curto (diferente do spice).
+O amplificador operacional ideal tem a saida suspensa (diferente do spice).
+Os nos podem ser nomes. Numeros devem ser numeros normais.
+
+O acoplamento entre indutores (K) deve ser entre indutores ja declarados.
+K=1 e aceitavel.
+
+O diodo tem Vt=25 mV e Is=3.7751345e-14 (conduz 1 mA se v=0.6 V). Segue a
+curva i=Is(e^(v/VT)-1) se v<0.9 V, continuando em uma reta depois.
+
+Tipos de fonte (pulso simplificado em relacao ao spice):
+DC <valor>
+SIN (<nivel continuo> <amplitude> <frequencia (Hz)>)
+PULSE (<amplitude 1> <amplitude 2> <atraso>)
+
+Tipo de transistor MOS: NMOS ou PMOS
+Os transistores MOS usame um modelo simplificado de nivel 1 com:
+|Vt|=1 V; K=0.0001(W/L); Lambda=0.05
+O substrato (b) nao e usado (nao ha diodos no modelo nem dependencia de vbs).
+
+Circuitos que deixem nos desligados causam sistema singular. Isto pode
+acontecer se ha apenas transistores cortados ligados a um no. Capacitores
+cgs e cgd nos transistores usualmente resolvem o problema.
+O programa forca que todos os transistores estejam conduzindo na primeira
+analise (t=0, primeira iteracao), com um vgs>Vt. Isto evita singularidade
+em muitos casos.
+
+Devido ao erro grande do metodo "backward" de Euler usado, o programa
+permite fazer varios passos entre os tempos listados na tabela de saida.
+
+O programa e identico ao programa MNA1, com um laco de tempo e um laco
+com a iteracao de Newton-Raphson acrescentados, para tratar os elementos
+reativos e nao lineares.
+
+A entrada pode ser gerada com o programa Edfil, com cuidado de acrescentar
+o no b dos transistores MOS e todos os parametros necessarios. O elemento
+K e o amp. op. ideal tem que ser acrescentados por edicao do arquivo .net.
+Alguns arquivos .cir, esquematicos do Edfil, estao nos exemplos.
+A saida pode ser plotada com o programa XYplot. A primeira coluna da tabela
+e o tempo, e as demais as tensoes nodais, seguidas das correntes da MNA.
+A entrada nao e muito verificada, portanto verifique com atencao se o
+netlist esta corretamente escrito.
+
+ACMQ - 18/5/2003

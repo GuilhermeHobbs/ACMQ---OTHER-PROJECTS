@@ -1,0 +1,181 @@
+The TeslaSim program
+
+Introduction:
+
+The TeslaSim program computes and plots the voltages over the primary
+and secondary capacitances and currents in the primary and secondary
+inductances of a pair of RLC series resonant circuits,
+with the inductors coupled. This is the basic configuration of the
+resonators in a "Tesla coil" circuit. This simple model is usually
+accurate enough for design purposes and to give a better understanding
+of the operation of the circuit.
+
+    +--R1--+        +--R2--+
+ +  |      |        |      |   +
+Vc1 C1     L1 <-k-> L2     C2 Vc2
+ -  |      |        |      |   -
+    +--<---+        +-->---+
+      Il1             Il2
+
+The initial condition assumed is a voltage Vc1 over the capacitor C1.
+The desired effect is the generation of a very high voltage Vc2, at
+a reasonably high frequency, at the secondary capacitance C2 (that
+is usually a toroidal terminal). This happens when both tanks are
+tuned for the same frequency. The coupling causes the generation of
+a beating waveform, where gradually the initial energy in C1 is
+transferred to the secondary tank, with all the energy appearing
+concentrated in C2 periodically. The process is repetitive, with the
+energy moving between the two circuits with a period that increases
+as the coupling coefficient "k" decreases, being gradually dissipated
+by the resistive losses.
+R1 represents the series resistance of L1+C1 plus the equivalent resistance
+of a spark gap that initiates the process when Vc1 reaches its threshold
+voltage, assumed as at the start of the simulation.
+In a real circuit, the spark gap would eventually open, ideally at the
+first time when the energy in the primary circuit reaches a low value.
+The high secondary voltage would cause the generation of radiofrequency
+corona and large sparks between the terminal and nearby grounded objects,
+discharging C2. These effects are not taken into consideration in this
+simulation.
+
+Installation:
+
+To install the program, simply unpack the file teslasim.zip in an
+empty directory. It is a DOS program, but runs perfectly well under
+any version of Windows.
+It may be convenient to create a DOS environment variable:
+TPBGI=<directory where the files EGAVGA.BGI and LITT.CHR are>
+
+Operation:
+
+The values for the elements are specified in the "specify circuit
+parameters" dialog box.
+Rt is a scaling factor to allow plots of voltages and currents using
+the same vertical scale.
+
+It is also possible to specify the dimensions of the two coils and the
+capacitances, and let the program compute the inductances and parasitic
+capacitances using empirical formulas. The resistances are also computed,
+assuming standard copper wire as default. The computed values
+are inserted into the fields of the RLC parameters window. Also computed
+and listed are the wire lengths and weigths for the coils.
+
+All the parameters are given in SI units (Ohms, Farads, Henrys, Volts,
+Amperes, meters).
+
+The "Tune" buttons serve to compute one element in function of the others,
+for correct tuning. The tuning assumes that the sizes of the coils
+remains unchanged.
+
+The "Adjust pitches" button recalculates the sizes of the coils as function
+of the given winding pitches. Repeated pressing of this button and of
+the "Tune" buttons results in more realistic tuning (to be automated
+some day).
+
+In this version, the calculation of the ac resistances of the wires is
+imprecise, and not reliable if the skin depth is comparable to the wire
+diameter, if the wires are wound with small spacing, of if a too lossy
+material is used in the form. The ac resistances are assumed as resulting
+from an uniform tubular conducting layer on the surface of the wire,
+with the depth given be the skin depth on a flat sheet. If the skin depth
+is equal (rac=rdc in this condition) or greater than the wire radius,
+the dc resistance is used. The actual ac resistances may be significantly
+higher than the computed values, possibly by a factor of 5 or more.
+
+The program can compute the coupling coefficient from the geometry
+of the coils. The calculation is slow, and so optional. The coupling
+coefficient is almost independent on the number of turns in the coils,
+and so the calculation can be greatly accelerated by decreasing
+temporarily the number of turns in the secondary coil (ex: 100 instead
+of 1000 turns accelerates 10 times). If the coils are too close,
+the calculation loses precision.
+
+It's possible to set the coupling coefficients to the optimal values
+for the lossless case, by specifying the multipliers k and l that
+define the ratio between the two oscillation frequencies of the
+network. k and l shall be two integers with odd difference. They don't
+have effect if the coupling coefficient is directly specified or
+calculated.
+
+The plotting window accepts several commands:
+Mouse left button: cursor.
+Mouse central button (or shift-any mouse key), or Tab key: change curve.
+Mouse left button: open menu (works over any window).
+Arrows keys: move curves.
+Home key: less time.
+End key: more time.
++ key: less voltage.
+- key: more voltage.
+F1 key or space key: auto scale.
+F2 key: open menu (useful if a one-button mouse is used).
+
+Theory:
+
+The program computes the time-domain waveforms from the inversion of
+exact Laplace transform expressions, valid for any combinations of
+element values. The expressions are listed below:
+
+The coefficients of the Laplace transform denominator are:
+d0=1/(L1*L2*C1*C2)/(1-k*k);
+d1=(R2/(L2*L1*C1)+R1/(L1*L2*C2))/(1-k*k);
+d2=(1/(L1*C1)+1/(L2*C2)+R1*R2/(L1*L2))/(1-k*k);
+d3=(R1/L1+R2/L2)/(1-k*k);
+d4=1;
+For the primary voltage Vc1(s), the numerator coefficients are:
+n0=R1/(L1*L2*C2)/(1-k*k);
+n1=(1/(L2*C2)+R1*R2/(L1*L2))/(1-k*k);
+n2=(R1/L1+R2/L2)/(1-k*k);
+n3=1;
+All multiplied by Vc1(0).
+For the secondary voltage Vc2(s), the numerator coefficients are:
+n0=0;
+n1=1;
+All multiplied by Vc1(0)*k/C2/sqrt(L1*L2)/(1-k*k).
+For the primary current Il1(s), the numerator coefficients are:
+n0=1/(L2*C2);
+N1=R2/L2;
+N2=1;
+All multiplied by Vc1(0)/(L1*(1-k*k))*Rt.
+For the secondary current Il2(s), the numerator coefficients are:
+n0=0;
+n1=0;
+n2=1;
+All multiplied by Vc1(0)*k/sqrt(L1*L2)/(1-k*k)*Rt.
+
+Optimal coupling (in a lossless circuit):
+With k and l being the multipliers and k12 the coupling coefficient:
+k12=(l^2-k^2)/(l^2+k^2)
+Maximum voltage gain: Avmax=(C1/C2)^0.5.
+In a tuned circuit, this is equivalent to (L2/L1)^0.5.
+
+Laplace transform inverter:
+
+The general-purpose Laplace transform inverter can be also used to
+solve other problems, with the program reading the numerator and
+denominator polynomials of the transform from files.
+These files are text files with one number per line, in the format:
+
+First line: polynomial order n
+Next n lines: coefficient a(n)
+Next line: multiplying constant
+Next line: frequency normalization factor
+
+The denominator file shall be named <name>.d, and the numerator
+file <name>.n or <name>.n<i>, with <i> being an integer number.
+<name> and <i> are specified in the "Read Laplace transform" dialog box.
+It is important to use the frequency normalization factor to obtain
+precise results. The poles and finite zeros of the normalized transform
+must be close to the unit circle.
+Loaplace transforms for the waveforms in a triple resonance circuit
+(Tesla magnifier) can be generated by the Magsim program.
+Laplace transforms for a wide class of electronic circuits can be
+obtained with the help of the IFFT program.
+This program, and the others mentioned, are available at:
+http://www.coe.ufrj.br/~acmq/programs
+ftp://coe.ufrj.br/pub/acmq
+
+Created in 30 March 1998
+Revised in 23 February 2004
+Antonio Carlos M. de Queiroz
+http://www.coe.ufrj.br/~acmq
+acmq@ieee.org

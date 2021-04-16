@@ -1,0 +1,111 @@
+Programa NRSIM - Instrucoes para a versao 1.2f.
+-----------------------------------------------
+
+O programa permite a analise CC e transiente de circuitos nao lineares
+modelados por partes compostos dos elementos descritos abaixo.
+
+O programa realizara a analise de uma serie de circuitos descritos por
+arquivos, e colocara os resultados tambem em uma serie de arquivos. Os
+circuitos a analisar podem ser dados ao programa um por um, ou todos
+de uma vez pela linha de comando:
+
+NRSIM <arquivo1> <arquivo2> ...
+
+O sufixo dos nomes dos arquivos devera ser NET.
+
+Durante a analise, as variaveis de saida pedidas serao plotadas na tela,
+e podem ser examinadas por um cursor. Ao fim de cada analise, um arquivo
+de saida com sufixo GRF sera escrito, contendo os valores plotados, um
+em cada coluna, sendo a primeira a do tempo. Este arquivo pode ser usado
+como entrada do programa GRAFXY para o tracado de graficos mais elaborados.
+
+Formato do arquivo de entrada:
+
+1a. linha: numero de nos
+
+Linhas seguintes: o 1o. caracter determina o elemento/instrucao.
+
+Tempos e saidas:
+
+# <passo> <maximo tempo> <numero de saidas> <no de saida>..<no de saida>
+  valores default (se nao existir o comando):
+  passo = 0.01
+  maximo tempo = o suficiente para encher a tela.
+  numero de saidas = todas as tensoes (as correntes podem ser pedidas por
+  numeros maiores que o numero de nos, na ordem da descricao. Sao calculadas
+  as correntes em indutores e fontes de tensao).
+Comentario: *<comentario>
+Resistor:   R<nome> <no 1> <no 2> <resistencia>
+Capacitor:  C<nome> <no 1> <no 2> <capacitancia>
+Indutor:    L<nome> <no 1> <no 2> <indutancia>
+Diodo:      D<nome> <no anodo> <no catodo> <R0> <R1> <R2> <Vd>
+            (R0 p/v<0, R1 p/0<v<Vd e R2 p/v>vd)
+Fonte V:    V<nome> <no +> <no -> <parametros>
+ <parametros>: Fonte de pulso: P <V0> <V1> <atraso> <largura> <periodo>
+               Fonte CC:       E <tensao>
+               Fonte senoidal: S <tensao de pico> <frequencia> <fase>
+Chave:      S<nome> <no 1> <no 2> <no controle> <Ron> <Roff> <Vt>
+            (a chave e ligada por Vcontrole>Vt)
+Tiristor:   T<nome> <no anodo> <no catodo> <no gate> <Ron> <Roff> <Vt>
+            (SCR que dispara se Vgate-Vcatodo>Vt. Um modelo melhor deve
+            incluir um diodo do gate para o catodo)
+
+Observacoes:
+
+O metodo de analise usado nao e exato, podendo ocorrer erros quantitativos
+significativos se o passo (que e FIXO nesta versao) nao for muito menor que
+a menor constante de tempo natural do circuito analisado. A solucao e, en-
+tretanto, normalmente qualitativamente correta e tao mais exata quanto menor
+o passo.
+
+O programa realiza uma analise CC do circuito antes da analise transiente,
+levando em conta o valor das fontes no tempo inicial, e a analise transiente
+parte dos valores encontrados.
+
+Nesta versao, o tempo de analise e limitado a 501 passos, o que da um total
+de 502 pontos no grafico, sendo o primeiro o resultante da analise CC.
+
+Os valores default para o passo e as escalas dos graficos sao adequados para
+circuitos normalizados (1 rad/s, 1 Ohm, 1 Volt).
+
+Circuitos contendo elementos RLC, diodos, chaves  e fontes de tensao, podem
+ser editados no programa EdFil. Tiristores nao estao implementados la.
+
+ACMQ - 04/04/92
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
